@@ -172,7 +172,16 @@
     if (_usesThreadedAnimation) {
         // draw now instead of waiting for setNeedsDisplay (that's the whole reason
         // we're animating from background thread)
-        [self display];
+	
+		_isDisplaying = YES;
+		[NSAnimationContext runAnimationGroup:^(NSAnimationContext *context)
+		{
+			[self display];
+		}
+		completionHandler:^
+		{
+			_isDisplaying = NO;
+		}];
     }
     else {
         [self setNeedsDisplay:YES];
@@ -196,7 +205,10 @@
 			animationPool = [[NSAutoreleasePool alloc] init];
 			poolFlushCounter = 0;
 		}
-	} while (![[NSThread currentThread] isCancelled]); 
+	} while (![[NSThread currentThread] isCancelled]);
+
+	while (_isDisplaying)
+		usleep(1000);
 
 	[animationPool release];
 }

@@ -45,6 +45,8 @@
     
     NSTimer *_fadeOutAnimationTimer;
     BOOL _isFadingOut;
+
+	BOOL _isDisplaying;
     
     // For determinate mode
     BOOL _isIndeterminate;
